@@ -15,3 +15,36 @@ FROM (
 	) X
 INNER JOIN ClaimLog CL ON X.PK = CL.PK AND X.LatestAssignedDate = CL.EntryDate AND CL.FieldName = 'ExaminerCode' 
 ORDER BY CL.PK 
+
+#Query 2: Which reserve amounts in the Reserve table are higher than the reserve amount for ReserveID = 588785?
+
+SELECT *
+FROM Reserve R
+WHERE ReserveAmount > (
+	SELECT ReserveAmount
+	FROM Reserve R
+	WHERE ReserveID = 588785 
+	)
+
+#Query 3: Which reserve amounts in the Reserve table are above average?
+
+SELECT *
+FROM Reserve R
+WHERE ReserveAmount > (
+	SELECT AVG(ReserveAmount)
+	FROM Reserve R
+	)
+
+#Query 4: What is the ReserveID of the second highest reserve amount? 
+
+SELECT ReserveID, ReserveAmount
+FROM Reserve 
+WHERE ReserveAmount = (
+SELECT MIN(ReserveAmount)
+FROM
+	(
+	SELECT TOP 2 ReserveAmount
+	FROM Reserve 
+	ORDER BY ReserveAmount DESC
+	) X
+)
