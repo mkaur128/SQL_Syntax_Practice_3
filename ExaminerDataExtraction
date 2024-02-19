@@ -1,0 +1,17 @@
+---SQL Queries produced in SSMS---
+---Practice case study resource from Udemy--- 
+---SUBQUERIES Syntax---
+
+#Query 1: Get the current examiner and assigned date for every claim
+
+SELECT CL.PK AS ClaimID
+	, CL.NewValue AS CurrentExaminer
+	, X.LatestAssignedDate AS AssignedDate 
+FROM (
+	SELECT PK, MAX(EntryDate) AS LatestAssignedDate
+	FROM ClaimLog
+	WHERE FieldName = 'ExaminerCode' 
+	GROUP BY PK 
+	) X
+INNER JOIN ClaimLog CL ON X.PK = CL.PK AND X.LatestAssignedDate = CL.EntryDate AND CL.FieldName = 'ExaminerCode' 
+ORDER BY CL.PK 
